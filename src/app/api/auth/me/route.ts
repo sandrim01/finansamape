@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { AUTH_COOKIE_NAME, verifySessionToken } from "@/lib/jwt";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const cookieStore = cookies();

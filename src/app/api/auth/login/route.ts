@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { verifyPassword, createSessionToken, AUTH_COOKIE_NAME } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
@@ -97,7 +99,10 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("Erro no processamento de login:", error);
     return NextResponse.json(
-      { error: "Erro interno no servidor ao processar o login." },
+      {
+        error: error?.message || "Erro interno no servidor ao processar o login.",
+        details: String(error?.stack || error),
+      },
       { status: 500 }
     );
   }

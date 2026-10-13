@@ -10,7 +10,6 @@ import {
   TrendingUp,
   Users,
   Package,
-  Wrench,
   CheckCircle2,
 } from "lucide-react";
 
@@ -58,19 +57,25 @@ export function Sidebar() {
 
   return (
     <aside className="w-64 bg-[#0B1329] text-slate-100 flex flex-col shrink-0 border-r border-[#1E2C48] select-none">
-      {/* Brand Header */}
-      <div className="p-5 border-b border-[#1E2C48]">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-            <Wrench className="w-5 h-5 text-white" />
+      {/* Brand Header com a Logo Oficial da Samape Índio */}
+      <div className="p-4 border-b border-[#1E2C48]">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="h-11 w-11 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 shadow-md shadow-black/30 group-hover:scale-105 transition-transform">
+            <img
+              src="/logo.png"
+              alt="Logo Samape Índio"
+              className="h-full w-full object-contain"
+            />
           </div>
           <div>
-            <div className="font-extrabold text-base leading-tight tracking-tight text-white flex items-center gap-1">
-              FINAN<span className="text-blue-400">SAMAPE</span>
+            <div className="font-black text-sm leading-tight tracking-tight text-white flex items-center gap-1">
+              SAMAPE <span className="text-rose-500 font-extrabold">ÍNDIO</span>
             </div>
-            <p className="text-[11px] text-[#94A3B8] font-medium">Gestão Financeira Integrada</p>
+            <p className="text-[10px] text-[#94A3B8] font-semibold tracking-wider uppercase">
+              Finanças & OS
+            </p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Navigation Links */}

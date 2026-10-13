@@ -20,11 +20,22 @@ export function Header({ title, subtitle, onRefresh, isLoading }: HeaderProps) {
 
   return (
     <header className="h-16 bg-[#0B1329] border-b border-[#1E2C48] px-6 md:px-8 flex items-center justify-between shrink-0">
-      <div>
-        <h1 className="text-lg font-bold text-slate-100 tracking-tight flex items-center gap-2">
-          {title}
-        </h1>
-        {subtitle && <p className="text-xs text-[#94A3B8] font-medium">{subtitle}</p>}
+      <div className="flex items-center gap-3">
+        {/* Logo Icon no Header exatamente como no SAMAPEOP */}
+        <div className="h-8 w-8 rounded-lg bg-white/95 p-1 flex items-center justify-center shrink-0 shadow-sm border border-white/20">
+          <img
+            src="/logo.png"
+            alt="Logo Samape Índio"
+            className="h-full w-full object-contain"
+          />
+        </div>
+
+        <div>
+          <h1 className="text-lg font-bold text-slate-100 tracking-tight flex items-center gap-2">
+            {title}
+          </h1>
+          {subtitle && <p className="text-xs text-[#94A3B8] font-medium">{subtitle}</p>}
+        </div>
       </div>
 
       <div className="flex items-center gap-3">
@@ -40,20 +51,20 @@ export function Header({ title, subtitle, onRefresh, isLoading }: HeaderProps) {
           </button>
         )}
 
-        {/* Date badge matching SAMAPEOP style */}
+        {/* Tag de data matching SAMAPEOP style */}
         <div className="flex items-center gap-2 text-xs font-medium text-slate-400 bg-[#151E34] border border-[#1E2C48] px-3 py-1.5 rounded-lg">
           <Calendar className="w-3.5 h-3.5 text-slate-400" />
           <span>{dataAtual}</span>
         </div>
 
-        {/* Version badge matching SAMAPEOP style */}
+        {/* Tag de versão matching SAMAPEOP style */}
         <div className="text-[11px] font-bold text-slate-400 border border-[#1E2C48] px-2.5 py-1 rounded-md bg-[#151E34]/50">
           v1.2.1 Finan
         </div>
 
         <div className="h-6 w-px bg-[#1E2C48] mx-1"></div>
 
-        {/* User avatar */}
+        {/* User profile */}
         <div className="flex items-center gap-2.5">
           <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold ring-2 ring-blue-500/30">
             AL

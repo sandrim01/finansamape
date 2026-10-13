@@ -16,6 +16,8 @@ export interface NotaFaturamentoData {
   status_pagamento?: string;
   valor_mao_obra: number;
   valor_pecas: number;
+  km_ida?: number | null;
+  km_volta?: number | null;
   km_total?: number;
   valor_por_km?: number;
   valor_deslocamento?: number;
@@ -212,12 +214,17 @@ export function NotaFaturamentoModal({ nota, onClose }: NotaFaturamentoModalProp
               {(nota.valor_deslocamento || 0) > 0 && (
                 <tr>
                   <td className="py-3 px-4">
-                    <span className="font-bold text-slate-900 block">Deslocamento Técnico / KM</span>
+                    <span className="font-bold text-slate-900 block">Deslocamento Técnico (Quilometragem)</span>
                     <span className="text-[11px] text-slate-500">
-                      Transporte e deslocamento até a base do cliente ({nota.km_total || 0} km a {formatCurrency(nota.valor_por_km)}/km)
+                      Transporte técnico até o cliente: {nota.km_total || 0} km rodados a {formatCurrency(nota.valor_por_km)}/km
                     </span>
+                    {Boolean(nota.km_ida && nota.km_volta) && (
+                      <span className="block text-[10px] text-slate-400 mt-0.5">
+                        Hodômetro Saída: {Number(nota.km_ida).toLocaleString("pt-BR")} km | Retorno: {Number(nota.km_volta).toLocaleString("pt-BR")} km
+                      </span>
+                    )}
                   </td>
-                  <td className="py-3 px-4 text-center text-slate-500">{nota.km_total || 0} km</td>
+                  <td className="py-3 px-4 text-center text-slate-600 font-semibold">{nota.km_total || 0} km</td>
                   <td className="py-3 px-4 text-right font-bold text-slate-800">
                     {formatCurrency(nota.valor_deslocamento)}
                   </td>

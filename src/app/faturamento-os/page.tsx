@@ -52,6 +52,8 @@ interface OrdemServico {
   valor_mao_obra: number;
   valor_pecas: number;
   valor_total: number;
+  km_ida?: number;
+  km_volta?: number;
   km_total: number;
   valor_por_km: number;
   valor_deslocamento: number;
@@ -167,6 +169,8 @@ export default function FaturamentoOsPage() {
       status_pagamento: os.faturamento_info.status,
       valor_mao_obra: os.valor_mao_obra,
       valor_pecas: os.valor_pecas,
+      km_ida: os.km_ida,
+      km_volta: os.km_volta,
       km_total: os.km_total,
       valor_por_km: os.valor_por_km,
       valor_deslocamento: os.valor_deslocamento,

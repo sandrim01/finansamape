@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(value: number | string | null | undefined): string {
+export function formatCurrency(value: number | string | any | null | undefined): string {
   if (value === null || value === undefined || value === "") return "R$ 0,00";
   const num = typeof value === "string" ? parseFloat(value) : Number(value);
   if (isNaN(num)) return "R$ 0,00";
@@ -43,4 +43,38 @@ export function formatDateTime(date: string | Date | null | undefined): string {
   } catch {
     return "-";
   }
+}
+
+/**
+ * Cálculo correto da quilometragem da Samape:
+ * km_ida = Hodômetro de saída do veículo
+ * km_volta = Hodômetro de retorno do veículo
+ * km_rodados = km_volta - km_ida (distância real percorrida na OS)
+ * valor_deslocamento = km_rodados * valor_por_km
+ */
+export function calcularQuilometragem(
+  kmIda?: any,
+  kmVolta?: any,
+  valorPorKm?: any
+) {
+  const ida = Number(kmIda || 0);
+  const volta = Number(kmVolta || 0);
+  const taxa = Number(valorPorKm || 0);
+
+  let kmRodados = 0;
+  if (volta > 0 && ida > 0 && volta >= ida) {
+    kmRodados = volta - ida;
+  } else if (volta > 0 && ida === 0) {
+    kmRodados = volta;
+  }
+
+  const valorDeslocamento = kmRodados * taxa;
+
+  return {
+    kmIda: ida,
+    kmVolta: volta,
+    kmRodados: Number(kmRodados.toFixed(2)),
+    valorPorKm: taxa,
+    valorDeslocamento: Number(valorDeslocamento.toFixed(2)),
+  };
 }

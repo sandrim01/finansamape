@@ -27,10 +27,14 @@ export async function GET() {
 
     const totalMaoObra = osFechadas.reduce((acc, os) => acc + Number(os.valor_mao_obra || 0), 0);
     const totalPecas = osFechadas.reduce((acc, os) => acc + Number(os.valor_pecas || 0), 0);
+    
+    // Cálculo correto do hodômetro: km_volta - km_ida = km rodados
     const totalDeslocamento = osFechadas.reduce((acc, os) => {
-      const kmTotal = Number(os.km_ida || 0) + Number(os.km_volta || 0);
+      const ida = Number(os.km_ida || 0);
+      const volta = Number(os.km_volta || 0);
       const taxaKm = Number(os.valor_por_km || 0);
-      return acc + kmTotal * taxaKm;
+      const kmRodados = (volta > 0 && ida > 0 && volta >= ida) ? (volta - ida) : (volta > 0 && ida === 0 ? volta : 0);
+      return acc + (kmRodados * taxaKm);
     }, 0);
 
     const ticketMedio = osFechadas.length > 0 ? faturamentoTotal / osFechadas.length : 0;

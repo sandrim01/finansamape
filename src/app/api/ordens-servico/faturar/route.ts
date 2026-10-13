@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { calcularQuilometragem } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -28,9 +29,7 @@ export async function GET() {
 
     const formatadas = ordens.map((os) => {
       const temFaturamento = os.contas_receber && os.contas_receber.length > 0;
-      const kmTotal = Number(os.km_ida || 0) + Number(os.km_volta || 0);
-      const valorKm = Number(os.valor_por_km || 0);
-      const valorDeslocamento = kmTotal * valorKm;
+      const kmInfo = calcularQuilometragem(os.km_ida, os.km_volta, os.valor_por_km);
 
       return {
         id: os.id,
@@ -67,11 +66,11 @@ export async function GET() {
         status: os.status,
         valor_mao_obra: Number(os.valor_mao_obra || 0),
         valor_pecas: Number(os.valor_pecas || 0),
-        km_ida: Number(os.km_ida || 0),
-        km_volta: Number(os.km_volta || 0),
-        km_total: kmTotal,
-        valor_por_km: valorKm,
-        valor_deslocamento: valorDeslocamento,
+        km_ida: kmInfo.kmIda,
+        km_volta: kmInfo.kmVolta,
+        km_total: kmInfo.kmRodados,
+        valor_por_km: kmInfo.valorPorKm,
+        valor_deslocamento: kmInfo.valorDeslocamento,
         valor_total: Number(os.valor_total || 0),
         faturado: temFaturamento,
         faturamento_info: temFaturamento ? os.contas_receber[0] : null,
@@ -130,9 +129,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const kmTotal = Number(os.km_ida || 0) + Number(os.km_volta || 0);
-    const valorKm = Number(os.valor_por_km || 0);
-    const valorDeslocamento = kmTotal * valorKm;
+    const kmInfo = calcularQuilometragem(os.km_ida, os.km_volta, os.valor_por_km);
 
     const notaFaturamento = {
       fatura_id: novaConta.id,
@@ -146,11 +143,11 @@ export async function POST(request: Request) {
       status_pagamento: novaConta.status,
       valor_mao_obra: Number(os.valor_mao_obra || 0),
       valor_pecas: Number(os.valor_pecas || 0),
-      km_ida: Number(os.km_ida || 0),
-      km_volta: Number(os.km_volta || 0),
-      km_total: kmTotal,
-      valor_por_km: valorKm,
-      valor_deslocamento: valorDeslocamento,
+      km_ida: kmInfo.kmIda,
+      km_volta: kmInfo.kmVolta,
+      km_total: kmInfo.kmRodados,
+      valor_por_km: kmInfo.valorPorKm,
+      valor_deslocamento: kmInfo.valorDeslocamento,
       valor_total: Number(os.valor_total || 0),
       cliente: os.clientes
         ? {

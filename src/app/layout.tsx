@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Sidebar } from "@/components/Sidebar";
+import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {
   title: "FinanSamape | Samape Índio Gestão Financeira",
@@ -20,10 +20,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className="flex h-screen overflow-hidden bg-[#0B1329] text-slate-100">
-        <Sidebar />
-        <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {children}
-        </main>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

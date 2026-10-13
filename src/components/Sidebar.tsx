@@ -11,7 +11,9 @@ import {
   Users,
   Package,
   CheckCircle2,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const navItems = [
   {
@@ -54,6 +56,7 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
 
   return (
     <aside className="w-64 bg-[#0B1329] text-slate-100 flex flex-col shrink-0 border-r border-[#1E2C48] select-none">
@@ -116,6 +119,32 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* User Session Quick Profile */}
+      {user && (
+        <div className="px-3 py-2.5 mx-3 mb-2 rounded-xl bg-[#151E34] border border-[#1E2C48] flex items-center justify-between">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <div className="h-7 w-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+              {user.nome.charAt(0).toUpperCase()}
+            </div>
+            <div className="overflow-hidden">
+              <div className="text-xs font-bold text-slate-200 truncate leading-tight">
+                {user.nome.split(" ")[0]}
+              </div>
+              <div className="text-[10px] text-slate-400 truncate">
+                {user.cargo}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={logout}
+            className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+            title="Encerrar sessão"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Database & System Status Footer */}
       <div className="p-4 border-t border-[#1E2C48] bg-[#0A1024]">

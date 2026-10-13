@@ -12,29 +12,58 @@ import {
   CheckCircle2,
   FileCheck,
   X,
+  FileText,
+  Printer,
 } from "lucide-react";
+import {
+  NotaFaturamentoModal,
+  NotaFaturamentoData,
+} from "@/components/NotaFaturamentoModal";
 
 interface OrdemServico {
   id: number;
   numero_os: string;
   cliente_id: number;
   cliente_nome: string;
+  cliente?: {
+    nome: string;
+    cnpj?: string | null;
+    cpf?: string | null;
+    telefone?: string | null;
+    email?: string | null;
+    endereco?: string | null;
+    cidade?: string | null;
+    estado?: string | null;
+    cep?: string | null;
+  } | null;
   maquina: string;
+  maquina_detalhes?: {
+    tipo?: string;
+    modelo?: string;
+    numero_serie?: string;
+    ano?: number | null;
+  } | null;
   mecanico: string;
   data_abertura: string;
   data_fechamento: string | null;
+  descricao_problema?: string | null;
+  servicos_realizados?: string | null;
   status: string;
   valor_mao_obra: number;
   valor_pecas: number;
   valor_total: number;
   km_total: number;
   valor_por_km: number;
+  valor_deslocamento: number;
   faturado: boolean;
   faturamento_info?: {
     id: number;
     status: string;
     valor: number;
     data_vencimento: string;
+    forma_pagamento?: string;
+    observacoes?: string;
+    created_at?: string;
   } | null;
 }
 
@@ -51,6 +80,9 @@ export default function FaturamentoOsPage() {
   const [observacoes, setObservacoes] = useState("");
   const [faturando, setFaturando] = useState(false);
   const [sucessoMsg, setSucessoMsg] = useState<string | null>(null);
+
+  // Estado para exibir a Nota de Faturamento gerada ou existente
+  const [notaExibicao, setNotaExibicao] = useState<NotaFaturamentoData | null>(null);
 
   const carregarOrdens = async () => {
     try {
@@ -101,9 +133,16 @@ export default function FaturamentoOsPage() {
         throw new Error(errorData.error || "Erro ao faturar OS");
       }
 
-      setSucessoMsg(`OS ${osSelecionada.numero_os} faturada com sucesso em Contas a Receber!`);
+      const json = await res.json();
+
+      setSucessoMsg(`OS ${osSelecionada.numero_os} faturada com sucesso!`);
       setOsSelecionada(null);
       await carregarOrdens();
+
+      // Abrir imediatamente a Nota de Faturamento completa na tela com a logo
+      if (json.nota_faturamento) {
+        setNotaExibicao(json.nota_faturamento);
+      }
 
       setTimeout(() => setSucessoMsg(null), 5000);
     } catch (err: any) {
@@ -111,6 +150,35 @@ export default function FaturamentoOsPage() {
     } finally {
       setFaturando(false);
     }
+  };
+
+  const visualizarNotaExistente = (os: OrdemServico) => {
+    if (!os.faturamento_info) return;
+
+    const nota: NotaFaturamentoData = {
+      fatura_id: os.faturamento_info.id,
+      numero_os: os.numero_os,
+      data_abertura: os.data_abertura,
+      data_fechamento: os.data_fechamento,
+      data_emissao: os.faturamento_info.created_at || os.data_fechamento,
+      data_vencimento: os.faturamento_info.data_vencimento,
+      forma_pagamento: os.faturamento_info.forma_pagamento || "BOLETO",
+      observacoes: os.faturamento_info.observacoes,
+      status_pagamento: os.faturamento_info.status,
+      valor_mao_obra: os.valor_mao_obra,
+      valor_pecas: os.valor_pecas,
+      km_total: os.km_total,
+      valor_por_km: os.valor_por_km,
+      valor_deslocamento: os.valor_deslocamento,
+      valor_total: os.valor_total,
+      cliente: os.cliente || { nome: os.cliente_nome },
+      maquina: os.maquina_detalhes || { modelo: os.maquina },
+      mecanico: os.mecanico,
+      servicos_realizados: os.servicos_realizados,
+      descricao_problema: os.descricao_problema,
+    };
+
+    setNotaExibicao(nota);
   };
 
   const ordensFiltradas = ordens.filter((os) => {
@@ -144,9 +212,19 @@ export default function FaturamentoOsPage() {
 
       <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
         {sucessoMsg && (
-          <div className="p-4 bg-emerald-950/60 border border-emerald-800 text-emerald-300 rounded-xl flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
-            <p className="font-semibold text-xs">{sucessoMsg}</p>
+          <div className="p-4 bg-emerald-950/60 border border-emerald-800 text-emerald-300 rounded-xl flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
+              <p className="font-semibold text-xs">{sucessoMsg}</p>
+            </div>
+            {notaExibicao && (
+              <button
+                onClick={() => setNotaExibicao(notaExibicao)}
+                className="text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-600 px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5"
+              >
+                <FileText className="w-3.5 h-3.5" /> Ver Nota de Faturamento
+              </button>
+            )}
           </div>
         )}
 
@@ -233,7 +311,7 @@ export default function FaturamentoOsPage() {
                   <th className="py-3 px-5 text-right">Peças</th>
                   <th className="py-3 px-5 text-right">Valor Total</th>
                   <th className="py-3 px-5 text-center">Faturamento</th>
-                  <th className="py-3 px-5 text-center">Ação</th>
+                  <th className="py-3 px-5 text-center">Nota / Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1E2C48]">
@@ -307,7 +385,13 @@ export default function FaturamentoOsPage() {
                               <Receipt className="w-3 h-3" /> Faturar
                             </button>
                           ) : os.faturado ? (
-                            <span className="text-[11px] text-emerald-400 font-medium">Lançada</span>
+                            <button
+                              onClick={() => visualizarNotaExistente(os)}
+                              className="px-2.5 py-1 bg-emerald-950/70 hover:bg-emerald-900 text-emerald-400 border border-emerald-800/50 text-[11px] font-bold rounded-lg transition-colors inline-flex items-center gap-1.5 shadow-sm"
+                              title="Visualizar e Imprimir Nota de Faturamento"
+                            >
+                              <Printer className="w-3 h-3" /> Ver Fatura
+                            </button>
                           ) : (
                             <span className="text-[11px] text-slate-500">Aguardando OS</span>
                           )}
@@ -322,7 +406,7 @@ export default function FaturamentoOsPage() {
         </div>
       </div>
 
-      {/* MODAL: GERAR CONTA A RECEBER */}
+      {/* MODAL: FORMULÁRIO PARA FATURAR OS */}
       {osSelecionada && (
         <div className="fixed inset-0 z-50 bg-[#0B1329]/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#151E34] rounded-2xl shadow-2xl border border-[#1E2C48] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
@@ -330,7 +414,7 @@ export default function FaturamentoOsPage() {
               <div>
                 <h3 className="font-bold text-sm text-white">Faturar Ordem de Serviço</h3>
                 <p className="text-xs text-[#94A3B8]">
-                  Lançar em Contas a Receber para a OS #{osSelecionada.numero_os}
+                  Gere a cobrança e emita a Nota de Faturamento da OS #{osSelecionada.numero_os}
                 </p>
               </div>
               <button
@@ -367,7 +451,7 @@ export default function FaturamentoOsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">Forma de Pagamento</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Forma de Pagamento Prevista *</label>
                 <select
                   value={formaPagamento}
                   onChange={(e) => setFormaPagamento(e.target.value)}
@@ -382,7 +466,7 @@ export default function FaturamentoOsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">Observações</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Observações de Faturamento</label>
                 <textarea
                   rows={2}
                   value={observacoes}
@@ -404,12 +488,20 @@ export default function FaturamentoOsPage() {
                   disabled={faturando}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
                 >
-                  {faturando ? "Gerando..." : "Confirmar e Lançar"}
+                  {faturando ? "Gerando Fatura..." : "Faturar & Gerar Nota"}
                 </button>
               </div>
             </form>
           </div>
         </div>
+      )}
+
+      {/* MODAL: NOTA DE FATURAMENTO COM A LOGO NO TOPO */}
+      {notaExibicao && (
+        <NotaFaturamentoModal
+          nota={notaExibicao}
+          onClose={() => setNotaExibicao(null)}
+        />
       )}
     </div>
   );

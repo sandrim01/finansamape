@@ -9,11 +9,9 @@ import {
   Clock,
   Search,
   Filter,
-  ArrowRight,
   CheckCircle2,
-  Calendar,
-  AlertCircle,
   FileCheck,
+  X,
 } from "lucide-react";
 
 interface OrdemServico {
@@ -45,7 +43,7 @@ export default function FaturamentoOsPage() {
   const [loading, setLoading] = useState(true);
   const [filtroStatus, setFiltroStatus] = useState("TODAS");
   const [busca, setBusca] = useState("");
-  
+
   // Modal de faturamento
   const [osSelecionada, setOsSelecionada] = useState<OrdemServico | null>(null);
   const [dataVencimento, setDataVencimento] = useState("");
@@ -72,10 +70,8 @@ export default function FaturamentoOsPage() {
     carregarOrdens();
   }, []);
 
-  // Abrir modal para faturar
   const abrirModalFaturar = (os: OrdemServico) => {
     setOsSelecionada(os);
-    // Data default: 15 dias a partir de hoje
     const d = new Date();
     d.setDate(d.getDate() + 15);
     setDataVencimento(d.toISOString().split("T")[0]);
@@ -117,7 +113,6 @@ export default function FaturamentoOsPage() {
     }
   };
 
-  // Filtragem
   const ordensFiltradas = ordens.filter((os) => {
     const matchBusca =
       os.numero_os.toLowerCase().includes(busca.toLowerCase()) ||
@@ -139,68 +134,68 @@ export default function FaturamentoOsPage() {
   const pendentesFaturar = totalFechadas - totalFaturadas;
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0B1329]">
       <Header
-        title="Faturamento de Ordens de Serviço"
-        subtitle="Integração direta com a operação: transforme manutenções concluídas em Contas a Receber"
+        title="Faturamento de OS"
+        subtitle="Integração direta com o operacional: fature manutenções concluídas da Samape"
         onRefresh={carregarOrdens}
         isLoading={loading}
       />
 
       <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
         {sucessoMsg && (
-          <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
-            <p className="font-semibold text-sm">{sucessoMsg}</p>
+          <div className="p-4 bg-emerald-950/60 border border-emerald-800 text-emerald-300 rounded-xl flex items-center gap-3">
+            <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
+            <p className="font-semibold text-xs">{sucessoMsg}</p>
           </div>
         )}
 
         {/* Resumo Rápido */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-white p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div className="bg-[#151E34] p-5 rounded-2xl border border-[#1E2C48] flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase">OS Concluídas</p>
-              <p className="text-xl font-bold text-slate-900">{totalFechadas}</p>
+              <p className="text-xs font-semibold text-[#94A3B8]">OS Concluídas na Oficina</p>
+              <p className="text-2xl font-black text-white mt-1">{totalFechadas}</p>
             </div>
-            <div className="p-2.5 bg-blue-50 text-blue-600 rounded-lg">
+            <div className="p-2.5 bg-blue-950 text-blue-400 border border-blue-800/40 rounded-xl">
               <CheckCircle className="w-5 h-5" />
             </div>
           </div>
-          <div className="bg-white p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+          <div className="bg-[#151E34] p-5 rounded-2xl border border-[#1E2C48] flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase">Faturadas no Financeiro</p>
-              <p className="text-xl font-bold text-emerald-600">{totalFaturadas}</p>
+              <p className="text-xs font-semibold text-[#94A3B8]">Faturadas no Financeiro</p>
+              <p className="text-2xl font-black text-emerald-400 mt-1">{totalFaturadas}</p>
             </div>
-            <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-lg">
+            <div className="p-2.5 bg-emerald-950 text-emerald-400 border border-emerald-800/40 rounded-xl">
               <FileCheck className="w-5 h-5" />
             </div>
           </div>
-          <div className="bg-white p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+          <div className="bg-[#151E34] p-5 rounded-2xl border border-[#1E2C48] flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase">Prontas para Faturar</p>
-              <p className="text-xl font-bold text-amber-600">{pendentesFaturar}</p>
+              <p className="text-xs font-semibold text-[#94A3B8]">Prontas para Faturar</p>
+              <p className="text-2xl font-black text-amber-400 mt-1">{pendentesFaturar}</p>
             </div>
-            <div className="p-2.5 bg-amber-50 text-amber-600 rounded-lg">
+            <div className="p-2.5 bg-amber-950 text-amber-400 border border-amber-800/40 rounded-xl">
               <Receipt className="w-5 h-5" />
             </div>
           </div>
         </div>
 
         {/* Barra de Filtros e Busca */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="bg-[#151E34] p-4 rounded-xl border border-[#1E2C48] flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-96">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
               placeholder="Buscar por Nº da OS, Cliente ou Máquina..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+              className="w-full pl-9 pr-4 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500 placeholder-slate-500"
             />
           </div>
 
           <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-            <span className="text-xs font-semibold text-slate-400 flex items-center gap-1">
+            <span className="text-xs font-semibold text-[#64748B] flex items-center gap-1">
               <Filter className="w-3.5 h-3.5" /> Filtrar:
             </span>
             {[
@@ -215,7 +210,7 @@ export default function FaturamentoOsPage() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                   filtroStatus === f.id
                     ? "bg-blue-600 text-white shadow-sm"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    : "bg-[#0B1329] text-slate-400 hover:text-white border border-[#1E2C48]"
                 }`}
               >
                 {f.label}
@@ -225,32 +220,32 @@ export default function FaturamentoOsPage() {
         </div>
 
         {/* Tabela de Ordens de Serviço */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-[#151E34] rounded-2xl border border-[#1E2C48] overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100">
+            <table className="w-full text-left text-xs text-slate-300">
+              <thead className="bg-[#11192E] text-[10px] font-bold text-[#64748B] uppercase tracking-wider border-b border-[#1E2C48]">
                 <tr>
-                  <th className="py-3 px-6">Ordem de Serviço</th>
-                  <th className="py-3 px-6">Cliente & Máquina</th>
-                  <th className="py-3 px-6">Mecânico</th>
-                  <th className="py-3 px-6">Status Oficina</th>
-                  <th className="py-3 px-6 text-right">Mão de Obra</th>
-                  <th className="py-3 px-6 text-right">Peças</th>
-                  <th className="py-3 px-6 text-right">Valor Total</th>
-                  <th className="py-3 px-6 text-center">Faturamento</th>
-                  <th className="py-3 px-6 text-center">Ação</th>
+                  <th className="py-3 px-5">Ordem de Serviço</th>
+                  <th className="py-3 px-5">Cliente & Máquina</th>
+                  <th className="py-3 px-5">Mecânico</th>
+                  <th className="py-3 px-5">Status Oficina</th>
+                  <th className="py-3 px-5 text-right">Mão de Obra</th>
+                  <th className="py-3 px-5 text-right">Peças</th>
+                  <th className="py-3 px-5 text-right">Valor Total</th>
+                  <th className="py-3 px-5 text-center">Faturamento</th>
+                  <th className="py-3 px-5 text-center">Ação</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#1E2C48]">
                 {loading ? (
                   <tr>
-                    <td colSpan={9} className="py-8 text-center text-slate-400">
-                      Carregando ordens de serviço do banco de dados...
+                    <td colSpan={9} className="py-8 text-center text-slate-500">
+                      Carregando ordens de serviço...
                     </td>
                   </tr>
                 ) : ordensFiltradas.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="py-8 text-center text-slate-400">
+                    <td colSpan={9} className="py-8 text-center text-slate-500">
                       Nenhuma ordem de serviço encontrada com os filtros selecionados.
                     </td>
                   </tr>
@@ -259,63 +254,62 @@ export default function FaturamentoOsPage() {
                     const isFechada = os.status?.toUpperCase() === "FECHADA";
 
                     return (
-                      <tr key={os.id} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="py-3.5 px-6">
-                          <span className="font-bold text-blue-600 block">{os.numero_os}</span>
-                          <span className="text-[11px] text-slate-400">{formatDate(os.data_abertura)}</span>
+                      <tr key={os.id} className="hover:bg-[#1B2745]/60 transition-colors">
+                        <td className="py-3.5 px-5">
+                          <span className="font-bold text-white block">{os.numero_os}</span>
+                          <span className="text-[10px] text-slate-500">{formatDate(os.data_abertura)}</span>
                         </td>
-                        <td className="py-3.5 px-6">
-                          <span className="font-semibold text-slate-900 block">{os.cliente_nome}</span>
-                          <span className="text-xs text-slate-500">{os.maquina}</span>
+                        <td className="py-3.5 px-5">
+                          <span className="font-semibold text-slate-200 block">{os.cliente_nome}</span>
+                          <span className="text-[11px] text-slate-400">{os.maquina}</span>
                         </td>
-                        <td className="py-3.5 px-6 text-xs text-slate-600">{os.mecanico}</td>
-                        <td className="py-3.5 px-6">
+                        <td className="py-3.5 px-5 text-slate-400">{os.mecanico}</td>
+                        <td className="py-3.5 px-5">
                           <span
-                            className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
+                            className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded ${
                               isFechada
-                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                : "bg-amber-50 text-amber-700 border border-amber-200"
+                                ? "bg-emerald-950/70 text-emerald-400 border border-emerald-800/50"
+                                : "bg-amber-950/70 text-amber-400 border border-amber-800/50"
                             }`}
                           >
-                            {isFechada ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
                             {os.status}
                           </span>
                         </td>
-                        <td className="py-3.5 px-6 text-right text-xs font-medium text-slate-700">
+                        <td className="py-3.5 px-5 text-right text-slate-300 font-medium">
                           {formatCurrency(os.valor_mao_obra)}
                         </td>
-                        <td className="py-3.5 px-6 text-right text-xs font-medium text-slate-700">
+                        <td className="py-3.5 px-5 text-right text-slate-300 font-medium">
                           {formatCurrency(os.valor_pecas)}
                         </td>
-                        <td className="py-3.5 px-6 text-right font-extrabold text-slate-900">
+                        <td className="py-3.5 px-5 text-right font-black text-white">
                           {formatCurrency(os.valor_total)}
                         </td>
-                        <td className="py-3.5 px-6 text-center">
+                        <td className="py-3.5 px-5 text-center">
                           {os.faturado ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                              <FileCheck className="w-3 h-3 text-blue-600" />
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-blue-950/80 text-blue-400 border border-blue-800/50">
+                              <FileCheck className="w-3 h-3 text-blue-400" />
                               Faturado
                             </span>
                           ) : isFechada ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-[#1B2745] text-slate-300">
                               Pendente
                             </span>
                           ) : (
-                            <span className="text-[11px] text-slate-400">Em manutenção</span>
+                            <span className="text-[10px] text-slate-500">Em oficina</span>
                           )}
                         </td>
-                        <td className="py-3.5 px-6 text-center">
+                        <td className="py-3.5 px-5 text-center">
                           {!os.faturado && isFechada ? (
                             <button
                               onClick={() => abrirModalFaturar(os)}
-                              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors inline-flex items-center gap-1"
+                              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold rounded-lg shadow-sm transition-colors inline-flex items-center gap-1"
                             >
-                              <Receipt className="w-3.5 h-3.5" /> Faturar
+                              <Receipt className="w-3 h-3" /> Faturar
                             </button>
                           ) : os.faturado ? (
-                            <span className="text-xs text-slate-400 font-medium">Contas a Receber #</span>
+                            <span className="text-[11px] text-emerald-400 font-medium">Lançada</span>
                           ) : (
-                            <span className="text-xs text-slate-400">Aguardando OS</span>
+                            <span className="text-[11px] text-slate-500">Aguardando OS</span>
                           )}
                         </td>
                       </tr>
@@ -328,48 +322,56 @@ export default function FaturamentoOsPage() {
         </div>
       </div>
 
-      {/* MODAL: GERAR CONTA A RECEBER DA OS */}
+      {/* MODAL: GERAR CONTA A RECEBER */}
       {osSelecionada && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-              <h3 className="font-bold text-lg text-slate-900">Faturar Ordem de Serviço</h3>
-              <p className="text-xs text-slate-500">
-                Gere uma entrada financeira em Contas a Receber para a OS #{osSelecionada.numero_os}
-              </p>
+        <div className="fixed inset-0 z-50 bg-[#0B1329]/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#151E34] rounded-2xl shadow-2xl border border-[#1E2C48] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="p-5 border-b border-[#1E2C48] flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-sm text-white">Faturar Ordem de Serviço</h3>
+                <p className="text-xs text-[#94A3B8]">
+                  Lançar em Contas a Receber para a OS #{osSelecionada.numero_os}
+                </p>
+              </div>
+              <button
+                onClick={() => setOsSelecionada(null)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
             <form onSubmit={handleGerarContaReceber} className="p-6 space-y-4">
-              <div className="bg-blue-50/60 p-3.5 rounded-xl border border-blue-100 text-xs space-y-1">
-                <div className="flex justify-between font-semibold text-slate-700">
+              <div className="bg-[#0B1329] p-3 rounded-xl border border-[#1E2C48] text-xs space-y-1">
+                <div className="flex justify-between text-slate-400">
                   <span>Cliente:</span>
-                  <span className="text-slate-900 font-bold">{osSelecionada.cliente_nome}</span>
+                  <span className="text-white font-bold">{osSelecionada.cliente_nome}</span>
                 </div>
-                <div className="flex justify-between font-semibold text-slate-700">
+                <div className="flex justify-between text-slate-400">
                   <span>Valor Total da OS:</span>
-                  <span className="text-blue-700 font-extrabold text-sm">
+                  <span className="text-emerald-400 font-black text-sm">
                     {formatCurrency(osSelecionada.valor_total)}
                   </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Data de Vencimento *</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Data de Vencimento *</label>
                 <input
                   type="date"
                   required
                   value={dataVencimento}
                   onChange={(e) => setDataVencimento(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Forma de Pagamento Prevista</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Forma de Pagamento</label>
                 <select
                   value={formaPagamento}
                   onChange={(e) => setFormaPagamento(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500"
                 >
                   <option value="BOLETO">Boleto Bancário</option>
                   <option value="PIX">PIX</option>
@@ -380,12 +382,12 @@ export default function FaturamentoOsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Observações / Instruções</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Observações</label>
                 <textarea
                   rows={2}
                   value={observacoes}
                   onChange={(e) => setObservacoes(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -393,7 +395,7 @@ export default function FaturamentoOsPage() {
                 <button
                   type="button"
                   onClick={() => setOsSelecionada(null)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white hover:bg-[#1B2745] rounded-lg transition-colors"
                 >
                   Cancelar
                 </button>
@@ -402,7 +404,7 @@ export default function FaturamentoOsPage() {
                   disabled={faturando}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
                 >
-                  {faturando ? "Gerando Fatura..." : "Confirmar e Lançar no Financeiro"}
+                  {faturando ? "Gerando..." : "Confirmar e Lançar"}
                 </button>
               </div>
             </form>

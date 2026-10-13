@@ -12,8 +12,6 @@ import {
   Search,
   Filter,
   Trash2,
-  DollarSign,
-  Calendar,
   X,
 } from "lucide-react";
 
@@ -45,7 +43,6 @@ export default function ContasReceberPage() {
   const [filtroStatus, setFiltroStatus] = useState("TODOS");
   const [busca, setBusca] = useState("");
 
-  // Modal Novo Recebimento
   const [modalNovoAberto, setModalNovoAberto] = useState(false);
   const [novoClienteId, setNovoClienteId] = useState("");
   const [novoDescricao, setNovoDescricao] = useState("");
@@ -182,7 +179,7 @@ export default function ContasReceberPage() {
   });
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0B1329]">
       <Header
         title="Contas a Receber"
         subtitle="Gerencie entradas financeiras, cobranças e recebimentos da Samape"
@@ -193,62 +190,62 @@ export default function ContasReceberPage() {
       <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
         {/* KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="bg-[#151E34] p-5 rounded-2xl border border-[#1E2C48]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 uppercase">A Receber (No Prazo)</span>
-              <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
-                <Clock className="w-5 h-5" />
+              <span className="text-xs font-semibold text-[#94A3B8]">A Receber (No Prazo)</span>
+              <div className="p-2 bg-blue-950 text-blue-400 border border-blue-800/40 rounded-lg">
+                <Clock className="w-4 h-4" />
               </div>
             </div>
-            <div className="mt-3">
-              <div className="text-2xl font-extrabold text-slate-900 tracking-tight">
+            <div className="mt-4">
+              <div className="text-2xl font-black text-white tracking-tight">
                 {formatCurrency(totalPendente)}
               </div>
-              <p className="mt-1 text-xs text-slate-500 font-medium">Previsão de entrada futura</p>
+              <p className="mt-1 text-xs text-[#94A3B8] font-medium">Previsão de entrada futura</p>
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="bg-[#151E34] p-5 rounded-2xl border border-[#1E2C48]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 uppercase">Recebido (Liquidado)</span>
-              <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
-                <CheckCircle className="w-5 h-5" />
+              <span className="text-xs font-semibold text-[#94A3B8]">Recebido (Liquidado)</span>
+              <div className="p-2 bg-emerald-950 text-emerald-400 border border-emerald-800/40 rounded-lg">
+                <CheckCircle className="w-4 h-4" />
               </div>
             </div>
-            <div className="mt-3">
-              <div className="text-2xl font-extrabold text-emerald-600 tracking-tight">
+            <div className="mt-4">
+              <div className="text-2xl font-black text-emerald-400 tracking-tight">
                 {formatCurrency(totalPago)}
               </div>
-              <p className="mt-1 text-xs text-emerald-700 font-medium">Entradas confirmadas em caixa</p>
+              <p className="mt-1 text-xs text-emerald-500 font-medium">Entradas confirmadas em caixa</p>
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="bg-[#151E34] p-5 rounded-2xl border border-[#1E2C48]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 uppercase">Vencido / Em Atraso</span>
-              <div className="p-2.5 bg-rose-50 text-rose-600 rounded-xl">
-                <AlertTriangle className="w-5 h-5" />
+              <span className="text-xs font-semibold text-[#94A3B8]">Vencido / Em Atraso</span>
+              <div className="p-2 bg-rose-950 text-rose-400 border border-rose-800/40 rounded-lg">
+                <AlertTriangle className="w-4 h-4" />
               </div>
             </div>
-            <div className="mt-3">
-              <div className="text-2xl font-extrabold text-rose-600 tracking-tight">
+            <div className="mt-4">
+              <div className="text-2xl font-black text-[#F87171] tracking-tight">
                 {formatCurrency(totalVencido)}
               </div>
-              <p className="mt-1 text-xs text-rose-600 font-medium">Atenção para cobrança ativa</p>
+              <p className="mt-1 text-xs text-[#F87171] font-medium">Cobranças em atraso</p>
             </div>
           </div>
         </div>
 
         {/* Barra de Filtros e Ação */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="bg-[#151E34] p-4 rounded-xl border border-[#1E2C48] flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-96">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
               placeholder="Buscar por descrição, cliente ou OS..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+              className="w-full pl-9 pr-4 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500 placeholder-slate-500"
             />
           </div>
 
@@ -266,7 +263,7 @@ export default function ContasReceberPage() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                     filtroStatus === f.id
                       ? "bg-blue-600 text-white shadow-sm"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      : "bg-[#0B1329] text-slate-400 hover:text-white border border-[#1E2C48]"
                   }`}
                 >
                   {f.label}
@@ -284,34 +281,34 @@ export default function ContasReceberPage() {
         </div>
 
         {/* Tabela de Contas a Receber */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-[#151E34] rounded-2xl border border-[#1E2C48] overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100">
+            <table className="w-full text-left text-xs text-slate-300">
+              <thead className="bg-[#11192E] text-[10px] font-bold text-[#64748B] uppercase tracking-wider border-b border-[#1E2C48]">
                 <tr>
-                  <th className="py-3 px-6">Descrição</th>
-                  <th className="py-3 px-6">Cliente</th>
-                  <th className="py-3 px-6">Origem</th>
-                  <th className="py-3 px-6">Vencimento</th>
-                  <th className="py-3 px-6">Forma</th>
-                  <th className="py-3 px-6 text-right">Valor</th>
-                  <th className="py-3 px-6 text-center">Status</th>
-                  <th className="py-3 px-6 text-center">Ações</th>
+                  <th className="py-3 px-5">Descrição</th>
+                  <th className="py-3 px-5">Cliente</th>
+                  <th className="py-3 px-5">Origem</th>
+                  <th className="py-3 px-5">Vencimento</th>
+                  <th className="py-3 px-5">Forma</th>
+                  <th className="py-3 px-5 text-right">Valor</th>
+                  <th className="py-3 px-5 text-center">Status</th>
+                  <th className="py-3 px-5 text-center">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#1E2C48]">
                 {loading ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-slate-400">
+                    <td colSpan={8} className="py-8 text-center text-slate-500">
                       Carregando contas a receber...
                     </td>
                   </tr>
                 ) : contasFiltradas.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-400">
-                      <ArrowDownLeft className="w-8 h-8 mx-auto text-slate-300 mb-2" />
-                      <p className="font-semibold text-slate-600">Nenhum recebimento registrado</p>
-                      <p className="text-xs text-slate-400 mt-0.5">
+                    <td colSpan={8} className="py-12 text-center text-slate-500">
+                      <ArrowDownLeft className="w-8 h-8 mx-auto text-slate-600 mb-2" />
+                      <p className="font-semibold text-slate-300">Nenhum recebimento registrado</p>
+                      <p className="text-xs text-slate-500 mt-0.5">
                         Fature uma Ordem de Serviço ou clique em "Nova Cobrança" para começar.
                       </p>
                     </td>
@@ -322,41 +319,41 @@ export default function ContasReceberPage() {
                     const isVencido = !isPago && c.data_vencimento < hoje;
 
                     return (
-                      <tr key={c.id} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="py-3.5 px-6 font-semibold text-slate-900">{c.descricao}</td>
-                        <td className="py-3.5 px-6 text-slate-700">{c.cliente_nome}</td>
-                        <td className="py-3.5 px-6">
+                      <tr key={c.id} className="hover:bg-[#1B2745]/60 transition-colors">
+                        <td className="py-3.5 px-5 font-semibold text-white">{c.descricao}</td>
+                        <td className="py-3.5 px-5 text-slate-300">{c.cliente_nome}</td>
+                        <td className="py-3.5 px-5">
                           {c.numero_os ? (
-                            <span className="font-bold text-xs text-blue-600">OS #{c.numero_os}</span>
+                            <span className="font-bold text-xs text-blue-400">OS #{c.numero_os}</span>
                           ) : (
-                            <span className="text-xs text-slate-400">Avulso</span>
+                            <span className="text-slate-500">Avulso</span>
                           )}
                         </td>
-                        <td className="py-3.5 px-6 text-xs text-slate-700 font-medium">
+                        <td className="py-3.5 px-5 text-[#94A3B8]">
                           {formatDate(c.data_vencimento)}
                         </td>
-                        <td className="py-3.5 px-6 text-xs font-semibold text-slate-600">
+                        <td className="py-3.5 px-5 text-slate-300 font-medium">
                           {c.forma_pagamento || "PIX"}
                         </td>
-                        <td className="py-3.5 px-6 text-right font-extrabold text-slate-900">
+                        <td className="py-3.5 px-5 text-right font-black text-white">
                           {formatCurrency(c.valor)}
                         </td>
-                        <td className="py-3.5 px-6 text-center">
+                        <td className="py-3.5 px-5 text-center">
                           {isPago ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              <CheckCircle className="w-3 h-3" /> Pago
+                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-400 border border-emerald-800/50">
+                              Pago
                             </span>
                           ) : isVencido ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
-                              <AlertTriangle className="w-3 h-3" /> Vencido
+                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-rose-950/70 text-rose-400 border border-rose-800/50">
+                              Vencido
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                              <Clock className="w-3 h-3" /> Pendente
+                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-blue-950/70 text-blue-400 border border-blue-800/50">
+                              Pendente
                             </span>
                           )}
                         </td>
-                        <td className="py-3.5 px-6 text-center">
+                        <td className="py-3.5 px-5 text-center">
                           <div className="flex items-center justify-center gap-2">
                             {!isPago && (
                               <button
@@ -370,7 +367,7 @@ export default function ContasReceberPage() {
                             <button
                               onClick={() => handleExcluir(c.id)}
                               title="Excluir Lançamento"
-                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                              className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-950/40 rounded-lg transition-colors"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -386,18 +383,18 @@ export default function ContasReceberPage() {
         </div>
       </div>
 
-      {/* MODAL: NOVA COBRANÇA MANUAL */}
+      {/* MODAL: NOVA COBRANÇA */}
       {modalNovoAberto && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 bg-[#0B1329]/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#151E34] rounded-2xl shadow-2xl border border-[#1E2C48] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="p-5 border-b border-[#1E2C48] flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-lg text-slate-900">Nova Cobrança a Receber</h3>
-                <p className="text-xs text-slate-500">Lançamento financeiro manual ou avulso</p>
+                <h3 className="font-bold text-sm text-white">Nova Cobrança a Receber</h3>
+                <p className="text-xs text-[#94A3B8]">Lançamento financeiro manual ou avulso</p>
               </div>
               <button
                 onClick={() => setModalNovoAberto(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-400 hover:text-white p-1 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -405,11 +402,11 @@ export default function ContasReceberPage() {
 
             <form onSubmit={handleCriarConta} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Cliente</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Cliente</label>
                 <select
                   value={novoClienteId}
                   onChange={(e) => setNovoClienteId(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500"
                 >
                   <option value="">Selecione um cliente (opcional)</option>
                   {clientes.map((cl) => (
@@ -421,20 +418,20 @@ export default function ContasReceberPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Descrição *</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Descrição *</label>
                 <input
                   type="text"
                   required
                   placeholder="Ex: Manutenção preventiva avulsa, Consultoria"
                   value={novoDescricao}
                   onChange={(e) => setNovoDescricao(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500 placeholder-slate-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Valor (R$) *</label>
+                  <label className="block text-xs font-bold text-slate-300 mb-1">Valor (R$) *</label>
                   <input
                     type="number"
                     step="0.01"
@@ -442,28 +439,28 @@ export default function ContasReceberPage() {
                     placeholder="0,00"
                     value={novoValor}
                     onChange={(e) => setNovoValor(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500 placeholder-slate-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Data Vencimento *</label>
+                  <label className="block text-xs font-bold text-slate-300 mb-1">Data Vencimento *</label>
                   <input
                     type="date"
                     required
                     value={novoVencimento}
                     onChange={(e) => setNovoVencimento(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full px-3 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Forma de Pagamento</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Forma de Pagamento</label>
                 <select
                   value={novoFormaPagamento}
                   onChange={(e) => setNovoFormaPagamento(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500"
                 >
                   <option value="PIX">PIX</option>
                   <option value="BOLETO">Boleto</option>
@@ -474,12 +471,12 @@ export default function ContasReceberPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Observações</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Observações</label>
                 <textarea
                   rows={2}
                   value={novoObservacoes}
                   onChange={(e) => setNovoObservacoes(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full px-3 py-2 text-xs bg-[#0B1329] border border-[#1E2C48] text-white rounded-lg focus:outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -487,7 +484,7 @@ export default function ContasReceberPage() {
                 <button
                   type="button"
                   onClick={() => setModalNovoAberto(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white hover:bg-[#1B2745] rounded-lg transition-colors"
                 >
                   Cancelar
                 </button>

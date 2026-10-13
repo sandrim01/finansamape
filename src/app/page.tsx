@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
+import { PeriodFilterBar } from "@/components/PeriodFilterBar";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   DollarSign,
@@ -37,6 +38,12 @@ import {
 } from "recharts";
 
 interface DashboardData {
+  periodo?: {
+    ano: string;
+    mes: string;
+    label: string;
+    anosDisponiveis: string[];
+  };
   resumo: {
     faturamentoTotal: number;
     faturamentoAberto: number;
@@ -47,14 +54,21 @@ interface DashboardData {
     totalMaoObra: number;
     totalPecas: number;
     totalDeslocamento: number;
+    totalKmRodados?: number;
     aReceberPendente: number;
     aReceberRealizado: number;
     aPagarPendente: number;
     aPagarRealizado: number;
     saldoPrevisao: number;
-    valorEstoqueCusto: number;
-    valorEstoqueVenda: number;
-    lucroProjetadoEstoque: number;
+    valorEstoqueCusto?: number;
+    valorEstoqueVenda?: number;
+    lucroProjetadoEstoque?: number;
+    receitaBruta?: number;
+    custoPecasEstimado?: number;
+    lucroBruto?: number;
+    lucroLiquidoRealizado?: number;
+    margemBruta?: number;
+    margemLiquida?: number;
   };
   historicoMensal: Array<{ mes: string; total: number; maoObra: number; pecas: number }>;
   topClientes: Array<{ nome: string; total: number; qtdOs: number }>;
@@ -81,11 +95,19 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const carregarDados = async () => {
+  // Filtros de período
+  const [ano, setAno] = useState("ALL");
+  const [mes, setMes] = useState("ALL");
+
+  const carregarDados = async (anoParam = ano, mesParam = mes) => {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch("/api/dashboard");
+      const query = new URLSearchParams({
+        ano: anoParam,
+        mes: mesParam,
+      }).toString();
+      const res = await fetch(`/api/dashboard?${query}`);
       if (!res.ok) throw new Error("Falha ao buscar dados do dashboard");
       const json = await res.json();
       setData(json);
@@ -97,8 +119,8 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    carregarDados();
-  }, []);
+    carregarDados(ano, mes);
+  }, [ano, mes]);
 
   const resumo = data?.resumo;
 
@@ -159,6 +181,19 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
+
+        {/* FILTRO DE PERÍODO (ANO E MÊS) */}
+        <PeriodFilterBar
+          anoSelecionado={ano}
+          mesSelecionado={mes}
+          anosDisponiveis={data?.periodo?.anosDisponiveis || ["2026", "2025"]}
+          periodoLabel={data?.periodo?.label}
+          onPeriodChange={(novoAno, novoMes) => {
+            setAno(novoAno);
+            setMes(novoMes);
+          }}
+          isLoading={loading}
+        />
 
         {/* 2. CARDS DE KPI (ESTILO EXATO DOS CARDS DO SAMAPEOP) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

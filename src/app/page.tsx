@@ -24,6 +24,8 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { TermometroMetas } from "@/components/TermometroMetas";
 import {
   BarChart,
   Bar,
@@ -91,9 +93,12 @@ interface DashboardData {
 const PIE_COLORS = ["#2563eb", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const primeiroNome = user?.nome ? user.nome.split(" ")[0] : "Gestor";
 
   // Filtros de período
   const [ano, setAno] = useState("ALL");
@@ -156,17 +161,26 @@ export default function DashboardPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-2">
           <div>
             <h2 className="text-2xl font-black text-white tracking-tight">
-              Olá, <span className="text-blue-500">Alessandro!</span>
+              Olá, <span className="text-blue-500">{primeiroNome}!</span>
             </h2>
             <p className="text-xs text-[#94A3B8] font-medium mt-0.5">
               Bem-vindo ao painel financeiro e de faturamento do SAMAPEOP.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <Link
+              href="/fluxo-caixa"
+              className="px-3.5 py-2 bg-[#151E34] hover:bg-[#1B2745] text-cyan-400 hover:text-cyan-300 border border-cyan-800/40 text-xs font-semibold rounded-xl transition-all flex items-center gap-2"
+              title="Acessar previsão futura do saldo de caixa"
+            >
+              <TrendingUp className="w-4 h-4 text-cyan-400" />
+              <span>Previsão de Caixa</span>
+            </Link>
+
             <Link
               href="/faturamento-os"
-              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-600/25 transition-all flex items-center gap-2"
+              className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-600/25 transition-all flex items-center gap-2"
             >
               <Receipt className="w-4 h-4" />
               <span>+ Faturar OS</span>
@@ -174,7 +188,7 @@ export default function DashboardPage() {
 
             <Link
               href="/contas-receber"
-              className="px-4 py-2.5 bg-[#151E34] hover:bg-[#1B2745] text-slate-200 hover:text-white border border-[#1E2C48] text-xs font-semibold rounded-xl transition-all flex items-center gap-2"
+              className="px-3.5 py-2 bg-[#151E34] hover:bg-[#1B2745] text-slate-200 hover:text-white border border-[#1E2C48] text-xs font-semibold rounded-xl transition-all flex items-center gap-2"
             >
               <Plus className="w-4 h-4 text-slate-400" />
               <span>+ Nova Cobrança</span>
@@ -194,6 +208,9 @@ export default function DashboardPage() {
           }}
           isLoading={loading}
         />
+
+        {/* TERMÔMETRO DE METAS & PONTO DE EQUILÍBRIO DO MÊS */}
+        <TermometroMetas ano={ano} mes={mes} />
 
         {/* 2. CARDS DE KPI (ESTILO EXATO DOS CARDS DO SAMAPEOP) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -517,6 +534,16 @@ export default function DashboardPage() {
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Deslocamento / KM
                 </span>
                 <span className="font-bold text-white">{formatCurrency(resumo?.totalDeslocamento)}</span>
+              </div>
+
+              <div className="pt-3 border-t border-[#1E2C48]">
+                <Link
+                  href="/faturamento-os?tab=lucro-real"
+                  className="w-full py-2 px-3 rounded-xl bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 hover:text-blue-300 border border-blue-500/30 text-xs font-bold flex items-center justify-center gap-1.5 transition-all group"
+                >
+                  <TrendingUp className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  <span>Ver Análise de Lucro Real por Linha</span>
+                </Link>
               </div>
             </div>
           </div>

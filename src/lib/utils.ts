@@ -57,15 +57,27 @@ export function calcularQuilometragem(
   kmVolta?: any,
   valorPorKm?: any
 ) {
-  const ida = Number(kmIda || 0);
+  let ida = Number(kmIda || 0);
   const volta = Number(kmVolta || 0);
   const taxa = Number(valorPorKm || 0);
+
+  // Sanitização de digitação de hodômetro (ex: 146.68 digitado com ponto em vez de 146680)
+  if (ida > 0 && ida < 1000 && volta > 10000) {
+    if (Math.abs(ida * 1000 - volta) < 2500) {
+      ida = ida * 1000;
+    }
+  }
 
   let kmRodados = 0;
   if (volta > 0 && ida > 0 && volta >= ida) {
     kmRodados = volta - ida;
   } else if (volta > 0 && ida === 0) {
     kmRodados = volta;
+  }
+
+  // Trava de segurança para distâncias irreais de atendimento (ex: erro grosseiro de digitação)
+  if (kmRodados > 3000 && taxa === 0) {
+    kmRodados = 0;
   }
 
   const valorDeslocamento = kmRodados * taxa;

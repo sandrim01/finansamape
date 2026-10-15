@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  parseCentroCustoECategoria,
+  formatarCategoriaParaSalvar,
+} from "@/lib/centrosCusto";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +12,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
     const categoria = searchParams.get("categoria");
+    const centroCusto = searchParams.get("centro_custo");
 
     const where: any = {};
     if (status && status !== "ALL") {
@@ -22,19 +27,32 @@ export async function GET(request: Request) {
       orderBy: { data_vencimento: "asc" },
     });
 
-    const formatadas = contas.map((c) => ({
-      id: c.id,
-      fornecedor: c.fornecedor,
-      descricao: c.descricao,
-      categoria: c.categoria || "Geral",
-      valor: Number(c.valor),
-      data_vencimento: c.data_vencimento,
-      data_pagamento: c.data_pagamento,
-      status: c.status || "PENDENTE",
-      forma_pagamento: c.forma_pagamento,
-      observacoes: c.observacoes,
-      created_at: c.created_at,
-    }));
+    let formatadas = contas.map((c) => {
+      const parsed = parseCentroCustoECategoria(c.categoria);
+      return {
+        id: c.id,
+        fornecedor: c.fornecedor,
+        descricao: c.descricao,
+        categoria: c.categoria || "Geral",
+        centro_custo_id: parsed.centroCustoId,
+        centro_custo_nome: parsed.centroCustoNome,
+        subcategoria: parsed.categoriaNome,
+        cor: parsed.cor,
+        corBg: parsed.corBg,
+        corTexto: parsed.corTexto,
+        valor: Number(c.valor),
+        data_vencimento: c.data_vencimento,
+        data_pagamento: c.data_pagamento,
+        status: c.status || "PENDENTE",
+        forma_pagamento: c.forma_pagamento,
+        observacoes: c.observacoes,
+        created_at: c.created_at,
+      };
+    });
+
+    if (centroCusto && centroCusto !== "ALL") {
+      formatadas = formatadas.filter((c) => c.centro_custo_id === centroCusto);
+    }
 
     return NextResponse.json(formatadas);
   } catch (error: any) {
@@ -48,7 +66,19 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { fornecedor, descricao, categoria, valor, data_vencimento, forma_pagamento, observacoes } = body;
+    const {
+      fornecedor,
+      descricao,
+      centro_custo_id,
+      subcategoria,
+      categoria,
+      valor,
+      data_vencimento,
+      data_pagamento,
+      status,
+      forma_pagamento,
+      observacoes,
+    } = body;
 
     if (!fornecedor || !descricao || !valor || !data_vencimento) {
       return NextResponse.json(
@@ -57,20 +87,38 @@ export async function POST(request: Request) {
       );
     }
 
+    const catFormatada =
+      centro_custo_id && subcategoria
+        ? formatarCategoriaParaSalvar(centro_custo_id, subcategoria)
+        : categoria || "ADMINISTRATIVO - Diversos";
+
+    const st = status || (data_pagamento ? "PAGO" : "PENDENTE");
+
     const novaConta = await prisma.contas_pagar.create({
       data: {
         fornecedor,
         descricao,
-        categoria: categoria || "Outros",
+        categoria: catFormatada,
         valor: parseFloat(valor),
         data_vencimento: new Date(data_vencimento),
-        status: "PENDENTE",
+        data_pagamento: data_pagamento ? new Date(data_pagamento) : null,
+        status: st,
         forma_pagamento: forma_pagamento || "BOLETO",
         observacoes,
       },
     });
 
-    return NextResponse.json(novaConta, { status: 201 });
+    const parsed = parseCentroCustoECategoria(novaConta.categoria);
+
+    return NextResponse.json(
+      {
+        ...novaConta,
+        centro_custo_id: parsed.centroCustoId,
+        centro_custo_nome: parsed.centroCustoNome,
+        subcategoria: parsed.categoriaNome,
+      },
+      { status: 201 }
+    );
   } catch (error: any) {
     return NextResponse.json(
       { error: "Erro ao criar conta a pagar", details: error.message },

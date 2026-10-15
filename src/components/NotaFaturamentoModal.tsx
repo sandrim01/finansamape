@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/utils";
+import { DADOS_EMPRESA } from "@/lib/empresa";
 import { Printer, X, CheckCircle, FileText, Calendar, Building, Wrench, ShieldCheck, DollarSign } from "lucide-react";
 
 export interface NotaFaturamentoData {
@@ -97,17 +98,17 @@ export function NotaFaturamentoModal({ nota, onClose }: NotaFaturamentoModalProp
               />
             </div>
             <div>
-              <h2 className="text-xl font-black tracking-tight text-slate-900 leading-none">
-                SAMAPE <span className="text-rose-600">ÍNDIO</span>
+              <h2 className="text-xl font-black tracking-tight text-slate-900 leading-tight">
+                {DADOS_EMPRESA.nomeFantasia}
               </h2>
-              <p className="text-xs font-bold text-slate-700 mt-1">
-                Manutenção & Reparação de Máquinas Pesadas
+              <p className="text-xs font-extrabold text-slate-800 mt-0.5">
+                {DADOS_EMPRESA.razaoSocial} • CNPJ: {DADOS_EMPRESA.cnpj} ({DADOS_EMPRESA.porte})
               </p>
-              <p className="text-[11px] text-slate-500">
-                Atendimento Técnico Especializado em Granitos, Minerações e Obras
+              <p className="text-[11px] text-slate-600 mt-0.5">
+                {DADOS_EMPRESA.enderecoCompleto}
               </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">
-                Email: contato@samape.com.br • Sistema Operacional SAMAPEOP
+              <p className="text-[10px] text-slate-500 mt-0.5">
+                Tel: {DADOS_EMPRESA.telefone} • Chave PIX: {DADOS_EMPRESA.chavePix} • CNAE {DADOS_EMPRESA.cnae}
               </p>
             </div>
           </div>
@@ -264,9 +265,9 @@ export function NotaFaturamentoModal({ nota, onClose }: NotaFaturamentoModalProp
 
             <div className="sm:text-right border-t sm:border-t-0 sm:border-l border-amber-200 pt-3 sm:pt-0 sm:pl-5">
               <span className="text-[10px] font-bold text-slate-500 uppercase block">Dados para Pagamento / PIX</span>
-              <p className="text-xs font-black text-slate-900 mt-0.5">financeiro@samape.com.br</p>
-              <p className="text-[10px] text-slate-600">Banco: Sicoob / Agência: 0001</p>
-              <p className="text-[10px] text-slate-500">Titular: Samape Índio Manutenção</p>
+              <p className="text-xs font-black text-slate-900 mt-0.5">{DADOS_EMPRESA.chavePix}</p>
+              <p className="text-[10px] text-slate-600">Tel / Whats: {DADOS_EMPRESA.telefone}</p>
+              <p className="text-[10px] text-slate-500">Titular: {DADOS_EMPRESA.razaoSocial}</p>
             </div>
           </div>
 
@@ -286,9 +287,9 @@ export function NotaFaturamentoModal({ nota, onClose }: NotaFaturamentoModalProp
           <div className="grid grid-cols-2 gap-12 text-center text-xs">
             <div>
               <div className="border-t border-slate-400 pt-2 font-bold text-slate-800">
-                Samape Índio Manutenção
+                {DADOS_EMPRESA.razaoSocial}
               </div>
-              <p className="text-[10px] text-slate-500">Responsável Financeiro</p>
+              <p className="text-[10px] text-slate-500">{DADOS_EMPRESA.nomeFantasia} • CNPJ {DADOS_EMPRESA.cnpj}</p>
             </div>
 
             <div>

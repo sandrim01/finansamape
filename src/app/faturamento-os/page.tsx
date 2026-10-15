@@ -19,6 +19,9 @@ import {
   NotaFaturamentoModal,
   NotaFaturamentoData,
 } from "@/components/NotaFaturamentoModal";
+import { AnaliseLucroReal } from "@/components/AnaliseLucroReal";
+import { ShieldCheck, Sparkles, TrendingUp as TrendingUpIcon } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 interface OrdemServico {
   id: number;
@@ -85,6 +88,18 @@ export default function FaturamentoOsPage() {
 
   // Estado para exibir a Nota de Faturamento gerada ou existente
   const [notaExibicao, setNotaExibicao] = useState<NotaFaturamentoData | null>(null);
+
+  // Aba ativa: Gestão de Faturamento vs Análise de Lucro Real por Linha
+  const [activeView, setActiveView] = useState<"faturamento" | "lucro-real">("faturamento");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("tab") === "lucro-real") {
+        setActiveView("lucro-real");
+      }
+    }
+  }, []);
 
   const carregarOrdens = async () => {
     try {
@@ -208,14 +223,60 @@ export default function FaturamentoOsPage() {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0B1329]">
       <Header
-        title="Faturamento de OS"
-        subtitle="Integração direta com o operacional: fature manutenções concluídas da Samape"
+        title={
+          activeView === "faturamento"
+            ? "Faturamento de OS"
+            : "Análise de Lucro Real por Linha de Receita"
+        }
+        subtitle={
+          activeView === "faturamento"
+            ? "Integração direta com o operacional: fature manutenções concluídas da Samape"
+            : "Mão de Obra vs. Peças vs. Deslocamento: apuração real da margem de contribuição da Samape"
+        }
         onRefresh={carregarOrdens}
         isLoading={loading}
       />
 
-      <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
-        {sucessoMsg && (
+      {/* SELETOR DE MODO: GESTÃO OPERACIONAL VS LUCRO REAL */}
+      <div className="flex items-center gap-2 border-b border-[#1E2C48] bg-[#0E172A] px-6 md:px-8 pt-3 shrink-0">
+        <button
+          onClick={() => setActiveView("faturamento")}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold border-b-2 transition-all ${
+            activeView === "faturamento"
+              ? "bg-[#151E34] border-blue-500 text-blue-400 shadow-sm"
+              : "border-transparent text-gray-400 hover:text-gray-200"
+          }`}
+        >
+          <Receipt className="w-4 h-4" />
+          <span>Ordens de Serviço & Faturamento</span>
+          <span className="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded-full font-mono">
+            {ordens.length}
+          </span>
+        </button>
+
+        <button
+          onClick={() => setActiveView("lucro-real")}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold border-b-2 transition-all ${
+            activeView === "lucro-real"
+              ? "bg-[#151E34] border-emerald-500 text-emerald-400 shadow-sm"
+              : "border-transparent text-gray-400 hover:text-gray-200"
+          }`}
+        >
+          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <span>Análise de Lucro Real por Linha</span>
+          <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full font-bold">
+            NOVO
+          </span>
+        </button>
+      </div>
+
+      {activeView === "lucro-real" ? (
+        <div className="flex-1 overflow-y-auto p-6 md:p-8">
+          <AnaliseLucroReal />
+        </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+          {sucessoMsg && (
           <div className="p-4 bg-emerald-950/60 border border-emerald-800 text-emerald-300 rounded-xl flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
@@ -409,6 +470,7 @@ export default function FaturamentoOsPage() {
           </div>
         </div>
       </div>
+      )}
 
       {/* MODAL: FORMULÁRIO PARA FATURAR OS */}
       {osSelecionada && (

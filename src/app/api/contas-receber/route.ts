@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       where,
       include: {
         clientes: {
-          select: { id: true, nome: true, cnpj: true, cpf: true, telefone: true },
+          select: { id: true, nome: true, cnpj: true, cpf: true, telefone: true, email: true },
         },
         ordens_servico: {
           select: { id: true, numero_os: true, status: true, valor_total: true },
@@ -34,6 +34,7 @@ export async function GET(request: Request) {
       id: c.id,
       cliente_id: c.cliente_id,
       cliente_nome: c.clientes?.nome || "Cliente avulso",
+      cliente_email: c.clientes?.email || null,
       os_id: c.os_id,
       numero_os: c.ordens_servico?.numero_os || null,
       descricao: c.descricao,

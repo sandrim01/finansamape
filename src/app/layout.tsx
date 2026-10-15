@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="flex h-screen overflow-hidden bg-[#0B1329] text-slate-100">
+      <body className="flex flex-col h-screen overflow-hidden bg-[#0B1329] text-slate-100">
         <AppShell>{children}</AppShell>
       </body>
     </html>

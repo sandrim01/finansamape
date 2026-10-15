@@ -1,0 +1,34 @@
+{
+  "ativa": false,
+  "horaDisparo": "09:00",
+  "diasSemana": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "enviarCopiaFinanceiro": true,
+  "regua": {
+    "lembreteAntesVencimento": true,
+    "avisoVencimentoHoje": true,
+    "cobrancaVencidoD3": true,
+    "cobrancaVencidoD7": true,
+    "cobrancaVencidoD15": true,
+    "cobrancaVencidoD30": true
+  },
+  "dadosFinanceiro": {
+    "nomeRemetente": "Financeiro - Samape Indio Mecanica Pesada",
+    "emailRemetente": "samapeindio.financeiro@gmail.com",
+    "emailResposta": "samapeindio.financeiro@gmail.com",
+    "telefoneContato": "(28) 9 9963-3220",
+    "chavePix": "indio@samapeop.com",
+    "favorecidoPix": "Samape Mecanica Pesada LTDA"
+  },
+  "templates": {
+    "assuntoPadrao": "Aviso Financeiro de Regularização - Samape Indio Mecanica Pesada",
+    "mensagemAbertura": "Prezado(a) {cliente_nome}, esperamos que este comunicado o encontre bem.",
+    "mensagemCorpo": "Identificamos em nosso sistema financeiro a existência de título(s) pendente(s) de regularização referente(s) aos serviços e manutenções mecânicas prestadas pela SAMAPE ÍNDIO MECÂNICA PESADA. Solicitamos a gentileza de verificar os detalhes abaixo para quitação:",
+    "mensagemEncerramento": "Caso o pagamento já tenha sido realizado nas últimas horas, por favor desconsidere este aviso ou nos encaminhe o comprovante em resposta a este e-mail. Para maiores dúvidas ou propostas de negociação, entre em contato diretamente com nossa equipe financeira."
+  }
+}

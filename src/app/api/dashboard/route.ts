@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { calcularQuilometragem } from "@/lib/utils";
+import {
+  CENTROS_DE_CUSTO,
+  parseCentroCustoECategoria,
+} from "@/lib/centrosCusto";
 
 export const dynamic = "force-dynamic";
 
@@ -129,6 +133,58 @@ export async function GET(request: Request) {
       .filter((c) => c.status?.toUpperCase() === "PAGO")
       .reduce((acc, c) => acc + Number(c.valor || 0), 0);
 
+    // Agregação de Despesas por Centro de Custo no período
+    const centrosMap: Record<
+      string,
+      {
+        id: string;
+        codigo: string;
+        nome: string;
+        cor: string;
+        corBg: string;
+        corTexto: string;
+        totalPago: number;
+        totalPendente: number;
+        totalGeral: number;
+        subcategorias: Record<string, number>;
+      }
+    > = {};
+
+    for (const cc of CENTROS_DE_CUSTO) {
+      centrosMap[cc.id] = {
+        id: cc.id,
+        codigo: cc.codigo,
+        nome: cc.nome,
+        cor: cc.cor,
+        corBg: cc.corBg,
+        corTexto: cc.corTexto,
+        totalPago: 0,
+        totalPendente: 0,
+        totalGeral: 0,
+        subcategorias: {},
+      };
+    }
+
+    for (const c of contasPagar) {
+      const parsed = parseCentroCustoECategoria(c.categoria);
+      const cc = centrosMap[parsed.centroCustoId] || centrosMap["ADMINISTRATIVO"];
+      const val = Number(c.valor || 0);
+      const isPago = c.status?.toUpperCase() === "PAGO";
+      if (isPago) cc.totalPago += val;
+      else cc.totalPendente += val;
+      cc.totalGeral += val;
+
+      const sub = parsed.categoriaNome || "Diversos";
+      cc.subcategorias[sub] = (cc.subcategorias[sub] || 0) + val;
+    }
+
+    const despesasPorCentroCusto = Object.values(centrosMap).map((cc) => ({
+      ...cc,
+      subcategoriasLista: Object.entries(cc.subcategorias)
+        .map(([nome, valor]) => ({ nome, valor }))
+        .sort((a, b) => b.valor - a.valor),
+    }));
+
     // 4. Histórico Mensal
     // Se o filtro for por ano específico ou ALL, agrupa por mês daquele período
     const faturamentoPorMesMap: Record<string, { mes: string; total: number; maoObra: number; pecas: number; deslocamento: number }> = {};
@@ -246,6 +302,7 @@ export async function GET(request: Request) {
       topClientes,
       rankingMecanicos,
       ultimasOrdens,
+      despesasPorCentroCusto,
     });
   } catch (error: any) {
     console.error("Erro na API dashboard:", error);
